@@ -1,0 +1,54 @@
+Time series results for all scenarios
+============================================================
+
+
+Scenario: RCP 2.6 (Low Emissions)
+Emissions: 5.0 Pg C/year
+------------------------------------------------------------
+Initial state:
+  C_atm = 600.00 Pg C
+  C_active = 200.00 Pg C
+  C_deep = 1400.00 Pg C
+  T = 270.00 K (-3.00°C)
+
+Final state:
+  C_atm = 1071.42 Pg C
+  C_active = 2.77 Pg C
+  C_deep = 571.08 Pg C
+  T = 310.52 K (37.52°C)
+  ΔT = 40.52 K
+
+
+Scenario: Baseline
+Emissions: 10.0 Pg C/year
+------------------------------------------------------------
+Initial state:
+  C_atm = 600.00 Pg C
+  C_active = 200.00 Pg C
+  C_deep = 1400.00 Pg C
+  T = 270.00 K (-3.00°C)
+
+Final state:
+  C_atm = 1401.02 Pg C
+  C_active = 2.59 Pg C
+  C_deep = 571.06 Pg C
+  T = 311.24 K (38.24°C)
+  ΔT = 41.24 K
+
+
+Scenario: RCP 8.5 (High Emissions)
+Emissions: 20.0 Pg C/year
+------------------------------------------------------------
+Initial state:
+  C_atm = 600.00 Pg C
+  C_active = 200.00 Pg C
+  C_deep = 1400.00 Pg C
+  T = 270.00 K (-3.00°C)
+
+Final state:
+  C_atm = 2060.23 Pg C
+  C_active = 2.35 Pg C
+  C_deep = 571.03 Pg C
+  T = 312.28 K (39.28°C)
+  ΔT = 42.28 K
+

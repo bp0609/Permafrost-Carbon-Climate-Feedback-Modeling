@@ -1,95 +1,107 @@
 """
-PARAMETERS.PY
-==============
-All physical parameters for the permafrost-carbon-climate model.
-
-Values from peer-reviewed literature (see Phase1_ParameterTable.md for sources)
-Course: EH605 - Modelling of Earth System & Sustainability
+Model parameters for Arctic Permafrost-Carbon-Climate model
+All values from peer-reviewed literature
 """
 
 import numpy as np
 
-# ============================================================================
-# COMPLETE PARAMETER DICTIONARY
-# ============================================================================
+# ============================================================
+# CARBON CYCLE PARAMETERS
+# ============================================================
 
-params = {
-    # === INITIAL CONDITIONS (Carbon Stocks) ===
-    'C_atm_0': 600.0,          # Pg C - Pre-industrial atmospheric carbon (280 ppm)
-    'C_active_0': 350.0,       # Pg C - Active layer permafrost (0-3m depth)
-    'C_deep_0': 1200.0,        # Pg C - Deep permafrost (>3m depth)
-    'T_s_0': 268.0,            # K - Initial Arctic temperature (-5°C)
-    
-    # === DECOMPOSITION KINETICS ===
-    'k0_decomp': 0.02,         # 1/yr - Base decomposition rate at T_ref
-    'Q10': 2.5,                # - Temperature sensitivity (Q10 rule)
-    'T_ref': 273.0,            # K - Reference temperature (0°C)
-    
-    # === PERMAFROST THAW ===
-    'k_thaw': 0.005,           # 1/yr - Thaw transfer coefficient
-    'T_threshold': 273.0,      # K - Thaw activation temperature (0°C)
-    'k_smooth': 0.5,           # - Smoothing parameter for sigmoid (1/K)
-    
-    # === OCEAN CARBON UPTAKE ===
-    'k_ocean': 0.015,          # 1/yr - Ocean uptake coefficient
-    'C_eq': 600.0,             # Pg C - Ocean equilibrium carbon
-    
-    # === ENERGY BALANCE (Budyko - Adjusted for Arctic) ===
-    'S': 1368.0,               # W/m² - Solar constant
-    'A': -150.0,               # W/m² - OLR intercept (adjusted for Arctic)
-    'B': 1.0,                  # W/(m²·K) - OLR slope
-    'C_heat': 5.0e8,           # J/(m²·K) - Heat capacity (larger for stability)
-    
-    # === ALBEDO (Ice-Albedo Feedback) ===
-    'alpha_ice': 0.70,         # - Ice/snow albedo (high reflectivity)
-    'alpha_tundra': 0.20,      # - Tundra/land albedo (low reflectivity)
-    'T_freeze': 273.0,         # K - Freezing point
-    'T_melt': 283.0,           # K - Complete melt temperature
-    
-    # === CO2 RADIATIVE FORCING ===
-    'alpha_CO2': 5.35,         # W/m² - CO2 radiative efficiency (per doubling)
-    'C_ref': 600.0,            # Pg C - Reference CO2 (pre-industrial)
-    
-    # === CONVERSION FACTORS ===
-    'seconds_per_year': 3.15e7,      # s/yr
-}
+# Decomposition (temperature-dependent)
+K_BASE = 0.02          # Base decomposition rate [1/year] at 0°C
+Q10 = 2.5              # Temperature sensitivity factor [-]
+T_REF = 273.0          # Reference temperature [K] (0°C)
 
-# Calculate W/m² to K/yr conversion factor
-params['W_per_m2_to_K_per_yr'] = params['seconds_per_year'] / params['C_heat']
+# Permafrost thaw
+K_THAW = 0.003         # Thaw rate coefficient [1/year]
+T_THRESHOLD = 273.0    # Thaw threshold temperature [K] (0°C)
+BETA_THAW = 0.5        # Sigmoid steepness [1/K]
 
-# ============================================================================
+# Ocean uptake
+K_OCEAN = 0.015        # Ocean uptake coefficient [1/year]
+C_OCEAN_EQ = 600.0     # Ocean equilibrium carbon [Pg C]
+
+# ============================================================
+# ENERGY BALANCE PARAMETERS
+# ============================================================
+
+# Solar radiation (Arctic-specific, annual average)
+SOLAR_EFFECTIVE = 240.0    # Arctic effective solar input [W/m²]
+
+# Albedo
+ALPHA_MIN = 0.15           # Minimum albedo (dark tundra) [-]
+ALPHA_MAX = 0.65           # Maximum albedo (ice/snow) [-]
+T_MELT = 273.0             # Melting point for albedo transition [K]
+GAMMA_ALBEDO = 0.2         # Albedo transition steepness [1/K]
+
+# Outgoing longwave (Budyko approximation)
+A_BUDYKO = 132.0           # OLR intercept [W/m²]
+B_BUDYKO = 2.0             # OLR slope [W/(m²·K)]
+T_BUDYKO = 273.0           # Reference temperature for OLR [K]
+
+# Heat capacity
+C_HEAT = 5.0e7             # Effective heat capacity [J/(m²·K)]
+
+# CO2 forcing
+ALPHA_CO2 = 5.35           # CO2 radiative forcing coefficient [W/m²]
+C_REF = 600.0              # Reference atmospheric carbon [Pg C]
+
+# Conversion factor
+SECONDS_PER_YEAR = 3.156e7 # [s/year]
+
+# ============================================================
+# INITIAL CONDITIONS
+# ============================================================
+
+# Pre-industrial
+C_ATM_0 = 600.0        # Atmospheric carbon [Pg C] (~280 ppm)
+C_ACTIVE_0 = 200.0     # Active layer permafrost [Pg C]
+C_DEEP_0 = 1400.0      # Deep permafrost [Pg C]
+T_SURFACE_0 = 270.0    # Surface temperature [K] (-3°C)
+
+# ============================================================
 # EMISSION SCENARIOS
-# ============================================================================
+# ============================================================
 
-def emissions_scenario(t, scenario='RCP4.5'):
-    """
-    Return anthropogenic emissions at time t [years]
-    
-    Parameters:
-    -----------
-    t : float or array
-        Time in years (0 = pre-industrial, e.g., 1850)
-    scenario : str
-        Emission scenario name
-        
-    Returns:
-    --------
-    E : float or array
-        Emissions rate [Pg C/yr]
-    """
-    if scenario == 'none':
-        return 0.0
-    elif scenario == 'baseline':
-        return 4.8 * np.exp(0.024 * t)
-    elif scenario == 'RCP2.6':
-        return 10.0 * np.exp(-0.02 * t)
-    elif scenario == 'RCP4.5':
-        return 12.0
-    elif scenario == 'RCP8.5':
-        return 10.0 * (1.0 + 0.02 * t)
-    else:
-        raise ValueError(f"Unknown scenario: {scenario}")
+# Anthropogenic emissions [Pg C/year]
+E_RCP26 = 5.0          # Low emissions
+E_BASELINE = 10.0      # Baseline
+E_RCP85 = 20.0         # High emissions
 
-if __name__ == "__main__":
-    print("Parameters loaded successfully!")
-    print(f"Initial conditions: C_atm={params['C_atm_0']} Pg C, T={params['T_s_0']-273:.1f}°C")
+# ============================================================
+# SIMULATION PARAMETERS
+# ============================================================
+
+T_FINAL = 300.0        # Simulation duration [years]
+N_POINTS = 3000        # Number of time points
+
+def get_params_dict():
+    """Return all parameters as a dictionary"""
+    return {
+        'k_base': K_BASE,
+        'Q10': Q10,
+        'T_ref': T_REF,
+        'k_thaw': K_THAW,
+        'T_threshold': T_THRESHOLD,
+        'beta_thaw': BETA_THAW,
+        'k_ocean': K_OCEAN,
+        'C_ocean_eq': C_OCEAN_EQ,
+        'S': SOLAR_EFFECTIVE,
+        'alpha_min': ALPHA_MIN,
+        'alpha_max': ALPHA_MAX,
+        'T_melt': T_MELT,
+        'gamma_albedo': GAMMA_ALBEDO,
+        'A': A_BUDYKO,
+        'B': B_BUDYKO,
+        'T_budyko': T_BUDYKO,
+        'C_heat': C_HEAT,
+        'alpha_co2': ALPHA_CO2,
+        'C_ref': C_REF,
+        'sec_per_year': SECONDS_PER_YEAR
+    }
+
+def get_initial_conditions():
+    """Return initial conditions"""
+    return np.array([C_ATM_0, C_ACTIVE_0, C_DEEP_0, T_SURFACE_0])

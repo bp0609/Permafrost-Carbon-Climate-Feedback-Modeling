@@ -1,0 +1,29 @@
+EQUILIBRIUM AND BIFURCATION ANALYSIS
+============================================================
+
+BIFURCATION ANALYSIS
+------------------------------------------------------------
+Emission range: 0.0 - 30.0 Pg C/year
+Number of points: 50
+
+
+FEEDBACK ANALYSIS
+------------------------------------------------------------
+
+RCP 2.6 (Low Emissions):
+  Temperature change: 40.52 K
+  Atmospheric carbon change: 471.4 Pg C
+  Carbon released from permafrost: 828.9 Pg C
+  Permafrost loss: 59.2%
+
+Baseline:
+  Temperature change: 41.24 K
+  Atmospheric carbon change: 801.0 Pg C
+  Carbon released from permafrost: 828.9 Pg C
+  Permafrost loss: 59.2%
+
+RCP 8.5 (High Emissions):
+  Temperature change: 42.28 K
+  Atmospheric carbon change: 1460.2 Pg C
+  Carbon released from permafrost: 829.0 Pg C
+  Permafrost loss: 59.2%
